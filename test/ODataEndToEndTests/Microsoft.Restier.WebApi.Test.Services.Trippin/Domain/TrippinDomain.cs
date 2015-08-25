@@ -129,6 +129,7 @@ namespace Microsoft.Restier.WebApi.Test.Services.Trippin.Domain
             enableConventionsAttribute.Configure(configuration, type);
             ConventionalActionProvider.ApplyTo(configuration, type);
             configuration.AddHookHandler(new CustomExtender());
+            configuration.AddHookPoint(typeof(IModelVisibilityFilter), new TestModelVisibilityFilter());
         }
 
         public override void Initialize(DomainContext context, Type type, object instance)
@@ -136,6 +137,34 @@ namespace Microsoft.Restier.WebApi.Test.Services.Trippin.Domain
             enableConventionsAttribute.Initialize(context, type, instance);
         }
     }
+
+    class TestModelVisibilityFilter : IModelVisibilityFilter
+    {
+        public bool IsVisible(
+            DomainConfiguration configuration,
+            InvocationContext context,
+            IEdmModel model, IEdmSchemaElement element)
+        {
+            if (element.Name == "Event")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsVisible(
+            DomainConfiguration configuration,
+            InvocationContext context,
+            IEdmModel model, IEdmEntityContainerElement element)
+        {
+            if (element.Name == "Events")
+            {
+                //return false;
+            }
+            return true;
+        }
+    }
+
 
     public class CustomExtender : HookHandler<ModelBuilderContext>
     {

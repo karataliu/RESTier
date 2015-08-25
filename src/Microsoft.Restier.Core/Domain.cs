@@ -2,13 +2,16 @@
 // Licensed under the MIT License.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.OData.Edm;
+using Microsoft.OData.Edm.Validation;
 using Microsoft.Restier.Core.Model;
 using Microsoft.Restier.Core.Query;
 using Microsoft.Restier.Core.Submit;
@@ -90,6 +93,9 @@ namespace Microsoft.Restier.Core
                 configuration.Model = new DomainModel(configuration, modelContext.Model);
                 model = configuration.Model;
             }
+
+            IEnumerable<EdmError> errors;
+            model.Validate(out errors);
 
             return model;
         }
@@ -559,6 +565,7 @@ namespace Microsoft.Restier.Core
             Ensure.NotNull(request, "request");
             var queryContext = new QueryContext(context, request);
             var model = await Domain.GetModelAsync(context) as DomainModel;
+
             queryContext.Model = new DomainModel(queryContext, model.InnerModel);
             var handler = queryContext.GetHookPoint<IQueryHandler>();
             return await handler.QueryAsync(queryContext, cancellationToken);

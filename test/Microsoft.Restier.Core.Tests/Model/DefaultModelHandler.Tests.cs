@@ -69,7 +69,7 @@ namespace Microsoft.Restier.Core.Tests.Model
             {
                 if (element.Name == "TestName")
                 {
-                    return false;
+                   // return false;
                 }
                 return true;
             }
@@ -79,9 +79,9 @@ namespace Microsoft.Restier.Core.Tests.Model
                 InvocationContext context,
                 IEdmModel model, IEdmEntityContainerElement element)
             {
-                if (element.Name == "TestEntitySet")
+                if (element.Name == "Events"  )
                 {
-                    return false;
+                //    return false;
                 }
                 return true;
             }
